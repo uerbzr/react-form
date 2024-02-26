@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Vehicle from "./Vehicle";
-import { validateMinimumLength, validateEmail } from "./utils";
-import FormInputErrors from "./FormInputErrors";
 
 function Vehicles({ title, vehicles, setVehicles }) {
   {
@@ -29,6 +27,7 @@ function Vehicles({ title, vehicles, setVehicles }) {
     make: "",
     model: "",
     email: "",
+    img: "",
   });
 
   const handleInputChange = (event) => {
@@ -51,9 +50,10 @@ function Vehicles({ title, vehicles, setVehicles }) {
         model: formData.model,
         email: formData.email,
         likes: 0,
+        img: formData.img,
       },
     ]);
-    setFormData({ make: "", model: "" });
+    setFormData({ make: "", model: "", email: "", img: "" });
   };
   const handleLikes = (id, amount) => {
     let _vehicles = [...vehicles];
@@ -62,28 +62,11 @@ function Vehicles({ title, vehicles, setVehicles }) {
     setVehicles(_vehicles);
   };
 
-  const validateForm = () => {
-    const formErrors = {
-      makeError: [],
-      modelError: [],
-      emailError: [],
-      hasErrors: false,
-    };
-
-    // name validations
-    if (!validateMinimumLength(formData.make, 3)) {
-      formErrors.makeError.push("Make must be at least 3 characters long.");
-      formErrors.hasErrors = true;
-    }
-    return formErrors;
-  };
-  const formErrors = validateForm();
-  const canSubmit = formErrors.hasErrors === false;
   return (
     <>
       <h1>{title ? title : "Vehicles"}</h1>
       <div className="row">
-        <div className="card col-md-4"></div>
+        <div className="col-md-4"></div>
         <div className="card col-md-4">
           <form onSubmit={handleSubmit}>
             <div className="class-header text-primary">Add a Vehicle</div>
@@ -95,7 +78,9 @@ function Vehicles({ title, vehicles, setVehicles }) {
                 placeholder="make of vehicle"
                 value={formData.make}
                 onChange={handleInputChange}
+                required
               />
+              <div class="invalid-feedback">Please provide a valid make.</div>
               <input
                 id="model"
                 className="form-control"
@@ -111,23 +96,27 @@ function Vehicles({ title, vehicles, setVehicles }) {
                 placeholder="your email"
                 value={formData.email}
                 onChange={handleInputChange}
+              />{" "}
+              <input
+                id="img"
+                className="form-control"
+                type="text"
+                placeholder="img url"
+                value={formData.img}
+                onChange={handleInputChange}
               />
             </div>
             <div className="class-footer pull-right">
               <button
                 type="submit"
                 className="btn btn-primary btn-sm pull-right"
-                disabled={canSubmit === false}
               >
                 Add
               </button>
             </div>
-            <div>
-              <FormInputErrors errors={formErrors.nameError} />
-            </div>
           </form>
         </div>
-        <div className="card col-md-4"></div>
+        <div className="col-md-4"></div>
         {vehicles.map((v, i) => (
           <Vehicle
             key={i}
